@@ -17,6 +17,7 @@ static AWheel w1 = {w1n, w1p, w1e, 1.00};
 static AWheel w2 = {w2n, w2p, w2e, 1.00};
 static AWheel w3 = {w3n, w3p, w3e, 1.00};
 static AWheel w4 = {w4n, w4p, w4e, 1.00};
+
 /********************VARIABLE AREA**********************/
 
 
@@ -24,18 +25,18 @@ static AWheel w4 = {w4n, w4p, w4e, 1.00};
  * 	Including the logic of H-Bridge;
  *	And wheel control with AWheel
  */
-void Wheel_Ctrl(AWheel wl, int dir, float val) {
+void Wheel_Ctrl(AWheel wl, direction dir, float val) {
 	switch(dir) {
-		case 0:
+		case stay:
 			digitalWrite(wl.nPin, LOW);
 			digitalWrite(wl.pPin, LOW);
 			analogWrite(wl.ENPin, LOW);
 			break;
-		case 1:
+		case forward:
 			digitalWrite(wl.nPin, HIGH);
 			digitalWrite(wl.pPin, LOW);
 			analogWrite(wl.ENPin, 255*val*wl.para);
-		case -1:
+		case backward:
 			digitalWrite(wl.nPin, LOW);
 			digitalWrite(wl.pPin, HIGH);
 			analogWrite(wl.ENPin, 255*val*wl.para);
