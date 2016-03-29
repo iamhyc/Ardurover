@@ -1,21 +1,32 @@
-#ifndef _Chasis_H_             //如果没有定义宏_MY_HEAD_H_
-#define _Chasis_H_             //则，定义该宏名
+#ifndef _CHASIS_H_             //如果没有定义宏_MY_HEAD_H_
+#define _CHASIS_H_             //则，定义该宏名
 
 //以下是被保护的代码区
 //进行相应的全局变量和结构体类型定义
 /********************CONSTANT AREA**********************/
-const int w1n = 22;	const int w1p = 23;
-const int w1e = 3;
+#define w1n  22	
+#define w1p  23
+#define w1e  3
 
-const int w2n = 24;	const int w2p = 25;
-const int w1e = 4;
+#define w2n  24	
+#define w2p  25
+#define w2e  4
 
-const int w3n = 26;	const int w3p = 27;
-const int w1e = 5;
+#define w3n  26	
+#define w3p  27
+#define w3e  5
 
-const int w4n = 28;	const int w4p = 29;
-const int w1e = 6;
+#define w4n  28	
+#define w4p  29
+#define w4e  6
 /********************CONSTANT AREA**********************/
+typedef struct
+{
+  short pPin;
+  short nPin;
+  short ENPin;
+  float para;
+}AWheel;
 
 void Mov_Clear(void);
 
