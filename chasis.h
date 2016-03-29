@@ -15,6 +15,8 @@ const int w1e = 5;
 
 const int w4n = 28;	const int w4p = 29;
 const int w1e = 6;
+
+enum direction { stay, forward, backward };
 /********************CONSTANT AREA**********************/
 
 void Mov_Clear(void);
