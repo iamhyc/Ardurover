@@ -1,5 +1,5 @@
-#ifndef _Chasis_H_             //如果没有定义宏_MY_HEAD_H_
-#define _Chasis_H_             //则，定义该宏名
+#ifndef CHASIS_H_             //如果没有定义宏_MY_HEAD_H_
+#define CHASIS_H_             //则，定义该宏名
 
 //以下是被保护的代码区
 //进行相应的全局变量和结构体类型定义
