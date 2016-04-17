@@ -20,13 +20,7 @@
 #define w4p  29
 #define w4e  6
 /********************CONSTANT AREA**********************/
-typedef struct
-{
-  short pPin;
-  short nPin;
-  short ENPin;
-  float para;
-}AWheel;
+
 
 void Mov_Clear(void);
 
@@ -38,4 +32,6 @@ void Mov_Right(float);
 void Rot_Left(void);
 void Rot_Right(void);
 
+// new schema
+void Mov_Trans(float, float);
 #endif

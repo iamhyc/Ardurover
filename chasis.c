@@ -2,8 +2,16 @@
 This is the chasis control part. Based on Four Macanum Wheel
 ***/
 
-/********************VARIABLE AREA**********************/
+#include <Arduino.h>
 
+/********************VARIABLE AREA**********************/
+typedef struct
+{
+  short pPin;
+  short nPin;
+  short ENPin;
+  float para;
+}AWheel;
 
 static AWheel w1 = {w1n, w1p, w1e, 1.00};
 static AWheel w2 = {w2n, w2p, w2e, 1.00};
