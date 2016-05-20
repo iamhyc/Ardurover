@@ -1,4 +1,4 @@
-
+#include "chasis.h"
 int rc[16] = {0};
 
 void setup()
@@ -15,6 +15,6 @@ void setup()
 
 void loop()
 {
-  //getrc();
+  SBUS_update();
   //control();
  }

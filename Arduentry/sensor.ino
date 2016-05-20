@@ -20,16 +20,19 @@ void JY901_update() {
 float JY901_getAcc(int num) {
 	if (num > 2 || num < 0)	return -1;
 	return (float)JY901.stcAcc.a[num]/32768*16;
+	//Acceleration Kalman Filter
 }
 
 float JY901_getAngle(int num) {
 	if (num > 2 || num < 0)	return -1;
 	return (float)JY901.stcAngle.Angle[num]/32768*180;
+	//Angle Kalman Filter
 }
 
 float JY901_getGyro(int num) {
 	if (num > 2 || num < 0)	return -1;
-	return (float)JY901.stcGyro.w[num]/32768*2000
+	return (float)JY901.stcGyro.w[num]/32768*2000;
+	//Gyro Kalman Filter
 }
 
 

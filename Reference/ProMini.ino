@@ -16,7 +16,6 @@
 HMC5983 compass;
 Ublox M8_Gps;
 SBUS sbus(Serial3);
-
 int motordirection[]={47,48,49,50,10,11,12,13};
 float gpsArray[N_FLOATS] = {0, 0, 0, 0};
 int speed[]={2,3,8,9};
@@ -32,7 +31,6 @@ float mag=0;
 float magold=0;
 float target=0;
 int count1=0;
-
 void setup()
 {
    Serial2.begin(BS_BAUD);
@@ -171,7 +169,7 @@ void control()
   errordif +=(error-errorold);
   count1=0;
   }
-  speedcontrol[0]=fix(rc[1]-((int)(rc[0]/1.2))+pidY[0]*error+pidY[1]*errorsum+pidY[2]*errordif);
+    speedcontrol[0]=fix(rc[1]-((int)(rc[0]/1.2))+pidY[0]*error+pidY[1]*errorsum+pidY[2]*errordif);
   speedcontrol[1]=speedcontrol[0];
   speedcontrol[2]=fix(rc[1]+ ((int)(rc[0]/1.2))-pidY[0]*error-pidY[1]*errorsum-pidY[2]*errordif);
   speedcontrol[3]=speedcontrol[2];
@@ -197,6 +195,121 @@ motorcontrol(i,speedcontrol[i]);
   }
 }
 
+/*void forward()
+{
+  digitalWrite(a[0],HIGH);
+  digitalWrite(a[1],LOW);
+  digitalWrite(a[3],HIGH);
+  digitalWrite(a[2],LOW);
+  digitalWrite(b[0],HIGH);
+  digitalWrite(b[1],LOW);
+  digitalWrite(b[2],HIGH);
+  digitalWrite(b[3],LOW);
+  speedcontrol[0]=fix(rc[1]+((int)(rc[0]/2)));
+  speedcontrol[1]=fix(rc[1]+((int)(rc[0]/2)));
+  speedcontrol[2]=fix(rc[1]-((int)(rc[0]/2)));
+  speedcontrol[3]=fix(rc[1]-((int)(rc[0]/2)));
+  for(i=0;i<4;i++)
+  analogWrite(speed[i],speedcontrol[i]);
+}
+void backward()
+{
+  digitalWrite(a[1],HIGH);
+  digitalWrite(a[0],LOW);
+  digitalWrite(a[2],HIGH);
+  digitalWrite(a[3],LOW);
+  digitalWrite(b[1],HIGH);
+  digitalWrite(b[0],LOW);
+  digitalWrite(b[3],HIGH);
+  digitalWrite(b[2],LOW);
+  
+  speedcontrol[0]=fix(abs(rc[1])+((int)(rc[0]/3)));
+  speedcontrol[1]=fix(abs(rc[1])+((int)(rc[0]/3)));
+  speedcontrol[2]=fix(abs(rc[1])-((int)(rc[0]/3)));
+  speedcontrol[3]=fix(abs(rc[1])-((int)(rc[0]/3)));
+  for(i=0;i<4;i++)
+  analogWrite(speed[i],speedcontrol[i]);
+}
+void right()
+{
+  digitalWrite(a[1],HIGH);
+  digitalWrite(a[0],LOW);
+  digitalWrite(a[3],HIGH);
+  digitalWrite(a[2],LOW);
+  digitalWrite(b[1],HIGH);
+  digitalWrite(b[0],LOW);
+  digitalWrite(b[2],HIGH);
+  digitalWrite(b[3],LOW);
+}
+void left()
+{
+  digitalWrite(a[0],HIGH);
+  digitalWrite(a[1],LOW);
+  digitalWrite(a[2],HIGH);
+  digitalWrite(a[3],LOW);
+  digitalWrite(b[0],HIGH);
+  digitalWrite(b[1],LOW);
+  digitalWrite(b[3],HIGH);
+  digitalWrite(b[2],LOW);
+}
+
+void turnleft()
+{
+  digitalWrite(a[0],HIGH);
+  digitalWrite(a[1],LOW);
+  digitalWrite(a[3],HIGH);
+  digitalWrite(a[2],LOW);
+  digitalWrite(b[1],HIGH);
+  digitalWrite(b[0],LOW);
+  digitalWrite(b[3],HIGH);
+  digitalWrite(b[2],LOW);
+}
+
+void turnright()
+{
+  digitalWrite(a[1],HIGH);
+  digitalWrite(a[0],LOW);
+  digitalWrite(a[2],HIGH);
+  digitalWrite(a[3],LOW);
+  digitalWrite(b[0],HIGH);
+  digitalWrite(b[1],LOW);
+  digitalWrite(b[2],HIGH);
+  digitalWrite(b[3],LOW);
+}*/
+void right()
+{
+  digitalWrite(motordirection[0],LOW);
+  digitalWrite(motordirection[1],HIGH);
+  digitalWrite(motordirection[2],LOW);
+  digitalWrite(motordirection[3],HIGH);
+  digitalWrite(motordirection[4],LOW);
+  digitalWrite(motordirection[5],HIGH);
+  digitalWrite(motordirection[6],LOW);
+  digitalWrite(motordirection[7],HIGH);
+}
+void left()
+{
+  digitalWrite(motordirection[1],LOW);
+  digitalWrite(motordirection[0],HIGH);
+  digitalWrite(motordirection[3],LOW);
+  digitalWrite(motordirection[2],HIGH);
+  digitalWrite(motordirection[5],LOW);
+  digitalWrite(motordirection[4],HIGH);
+  digitalWrite(motordirection[7],LOW);
+  digitalWrite(motordirection[6],HIGH);
+}
+
+void stop()
+{
+  digitalWrite(motordirection[0],LOW);
+  digitalWrite(motordirection[1],LOW);
+  digitalWrite(motordirection[2],LOW);
+  digitalWrite(motordirection[3],LOW);
+  digitalWrite(motordirection[4],LOW);
+  digitalWrite(motordirection[5],LOW);
+  digitalWrite(motordirection[6],LOW);
+  digitalWrite(motordirection[7],LOW);
+}
 
 void getGPS()
 {
@@ -210,7 +323,6 @@ void getGPS()
           gpsArray[1] = M8_Gps.latitude;
           gpsArray[2] = M8_Gps.longitude; 
           gpsArray[3] = M8_Gps.sats_in_use;
-          return;
         }
   }
 }
