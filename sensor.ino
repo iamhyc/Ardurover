@@ -40,10 +40,10 @@ void HMC_Initialization() {
 	compass.begin();
 }
 
-float HMC_getAngle() {
+float HMC_getAngle() {//Synchronous
 	float rs = -999;
 	rs = compass.read();
-
+	//with kalman filter
 	if (rs != -999) return rs;
 }
 
@@ -57,7 +57,7 @@ void GPS_Initialization() {
 	Serial1.begin(GPS_BAUD);
 }
 
-void GPS_update() {
+void GPS_update() {//Synchronous
 	while(Serial1.available()){
 		M8_Gps.encode(Serial1.read());
 	}
