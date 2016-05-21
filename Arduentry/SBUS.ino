@@ -29,10 +29,28 @@ void SBUS_update() {
 		rc[i] = sbus.getNormalizedChannel(i+1);
 }
 
+void norm_sgn(int ls, int ms, int hs, int val) {
+	
+}
+
 void SBUS_Normlize() {
 	//ch0, ch1, ch2...
 }
 
-void norm_sgn(int ls, int ms, int hs, int val) {
+void SBUS_print() {
+	for (int i = 0; i < 16; i++) {
+		Serial.print("Ch"+(i+1)+" ");
+		Serial.println(rc[i]);
+	}
+
+	Serial.print("Failsafe: ");
+	if (sbus.getFailsafeStatus() == SBUS_FAILSAFE_ACTIVE) {
+		Serial.println("Active");
+	}
+	if (sbus.getFailsafeStatus() == SBUS_FAILSAFE_INACTIVE) {
+		Serial.println("Not Active");
+	}
 	
+	Serial.print("Time diff: ");
+	Serial.println(millis() - sbus.getLastTime());
 }

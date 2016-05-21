@@ -35,6 +35,22 @@ float JY901_getGyro(int num) {
 	//Gyro Kalman Filter
 }
 
+void JY901_print() {
+	Serial.print("Acc:");
+	Serial.print((float)JY901.stcAcc.a[0]/32768*16);Serial.print(" ");
+	Serial.print((float)JY901.stcAcc.a[1]/32768*16);Serial.print(" ");
+	Serial.println((float)JY901.stcAcc.a[2]/32768*16);
+	Serial.print("Gyro:");
+	Serial.print((float)JY901.stcGyro.w[0]/32768*2000);Serial.print(" ");
+	Serial.print((float)JY901.stcGyro.w[1]/32768*2000);Serial.print(" ");
+	Serial.println((float)JY901.stcGyro.w[2]/32768*2000);
+	Serial.print("Angle:");
+	Serial.print((float)JY901.stcAngle.Angle[0]/32768*180);Serial.print(" ");
+	Serial.print((float)JY901.stcAngle.Angle[1]/32768*180);Serial.print(" ");
+	Serial.println((float)JY901.stcAngle.Angle[2]/32768*180);
+	Serial.println();
+}
+
 
 /****************HMC5983**************************/
 HMC5983 compass;
@@ -83,4 +99,13 @@ float GPS_Locate(String ins) {
 
 void GPS_Locate_pc(){
 	//with kalman filter
+}
+
+void GPS_print() {
+	Serial.print("ALT:");Serial.println(M8_Gps.altitude, 6);
+	Serial.print("LAT:");Serial.println(M8_Gps.latitude, 6);
+	Serial.print("LNT:");Serial.println(M8_Gps.longitude, 6);
+	Serial.print("SU");Serial.println(M8_Gps.sats_in_use, 6);
+	Serial.print("SV");Serial.println(M8_Gps.sats_in_view, 6);
+	Serial.println();
 }
