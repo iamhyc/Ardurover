@@ -69,7 +69,8 @@ float HMC_getAngle() {//Synchronous
 
 void HMC_print() {
   float c = HMC_getAngle();
-  Serial.println(c, 6);
+  Serial.println(c);
+  Serial2.println(c);
 }
 
 /***************Ublox GPS*************************/

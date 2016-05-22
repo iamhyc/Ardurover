@@ -56,8 +56,10 @@ void setup()
 
 void loop()
 {
- getrc();
- control();
+  getmag();
+  Serial.println(mag, 4);
+ //getrc();
+ //control();
  /*if(count1 == 4){
   Serial2.print(pidY[0]);
   Serial2.write('     ');

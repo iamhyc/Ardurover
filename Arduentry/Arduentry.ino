@@ -14,7 +14,7 @@ void setup()
   SBUS_Initilization();//Serial3,100000
 
   Serial2.begin(9600);//Serial BT Debug
-  //Serial.begin(9600);
+  Serial.begin(9600);
   //Auto_Initialization();
 }
 

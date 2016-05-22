@@ -8,9 +8,11 @@
 
 AWheel w1 = {w1n, w1p, w1e, 1.0000};//1.0000
 AWheel w2 = {w2n, w2p, w2e, 1.6891};//1.6891
-
 AWheel w3 = {w3n, w3p, w3e, 1.6891};//1.6891
 AWheel w4 = {w4n, w4p, w4e, 1.7837};//1.7837
+
+static float current_angle;
+static float target_angle;
 
 void Wheel_Ctrl(AWheel wl, float val) {
 	char dir = -1;
@@ -46,10 +48,39 @@ void TransMove(float vf, float vtr, float vrr) {
 		vtr = (vtr*top_speed)/vt;
 		vrr = (vrr*top_speed)/vt;
 	}
+	if (vrr == 0) {
+		current_angle = HMC_getAngle();
+		vrr = TransMove_Control(current_angle, target_angle);
+	}
+	else{
+		target_angle = HMC_getAngle();
+	}
+	
 	Wheel_Ctrl(w1, vf - vtr - ROTP * vrr);
 	Wheel_Ctrl(w2, vf + vtr + ROTP * vrr);
 	Wheel_Ctrl(w3, vf - vtr + ROTP * vrr);
 	Wheel_Ctrl(w4, vf + vtr - ROTP * vrr);
+	
+}
+
+float TransMove_Control(float current_angle, float target_angle)
+{
+    const float g_p = 2.0;
+    const float g_i = 0.0;
+    const float g_d = 0.0;
+    
+    static float error_g[3] = {0.0, 0.0, 0.0};
+    static float vrr_out = 0;
+    
+    error_g[0] = error_g[1];
+    error_g[1] = error_g[2];
+    error_g[2] = target_angle - current_angle;
+    
+    vrr_out = error_g[2] * g_p 
+			+ error_g[2] * g_i 
+			+ (error_g[2] - error_g[1]) * g_d;
+
+    return __fix(vrr_out);
 }
 
 void Wheel_Stop() {
