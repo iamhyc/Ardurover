@@ -64,6 +64,12 @@ float HMC_getAngle() {//Synchronous
 	rs = compass.read();
 	//with kalman filter
 	if (rs != -999) return rs;
+  else return 0;
+}
+
+void HMC_print() {
+  float c = HMC_getAngle();
+  Serial.println(c, 6);
 }
 
 /***************Ublox GPS*************************/
@@ -83,9 +89,9 @@ void GPS_update() {//Synchronous
 }
 
 float GPS_Locate(String ins) {
-	if (ins=="lat"||ins=="LAT"||ins=="latitude"||ins=="Latitude")
+	if (ins=="LAT"||ins=="latitude"||ins=="Latitude")
 		return M8_Gps.latitude;//
-	if (ins=="lng"||ins=="LNG"||ins=="longitude"||ins=="Longitude")
+	if (ins=="LNG"||ins=="longitude"||ins=="Longitude")
 		return M8_Gps.longitude;//
 	if (ins=="SU"||ins=="sats_in_use")
 		return M8_Gps.sats_in_use;//
@@ -97,8 +103,12 @@ float GPS_Locate(String ins) {
 	return -1;
 }
 
-void GPS_Locate_pc(){
+bool GPS_Locate_pc(){
+	while(GPS_Locate("SU") < 7){
+		delay(1000);
+	}
 	//with kalman filter
+	return true;
 }
 
 void GPS_print() {

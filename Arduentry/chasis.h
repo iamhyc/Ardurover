@@ -11,6 +11,7 @@ typedef struct
   float para;
 }AWheel;
 
+void Wheel_Stop(void);
 void Wheel_Ctrl(AWheel, float);
 void TransMove(float, float, float);
 #endif

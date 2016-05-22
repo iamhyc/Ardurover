@@ -1,4 +1,7 @@
 #include "chasis.h"
+#include "SBUS_Ctrl.h"
+#include "function.h"
+
 int rc[16] = {0};
 
 void setup()
@@ -6,15 +9,27 @@ void setup()
   PinMode_Initilization();
 
   HMC_Initialization();//I2C
-  GPS_Initialization();//Serial1
+  GPS_Initialization();//Serial1,9600
 
-  SBUS_Initilization();//Serial3
+  SBUS_Initilization();//Serial3,100000
 
-  Serial.begin(9600);//Serial0 Debug
+  Serial2.begin(9600);//Serial BT Debug
+  //Serial.begin(9600);
+  //Auto_Initialization();
 }
 
 void loop()
 {
   SBUS_update();
+  SBUS_Normlize();
+  TransMove(rc[1], rc[0], rc[3]);
+  /*if(rc[7] > 0)
+    Transmove(rc[1], rc[0], rc[3]);
+  else
+    automove();*/
+
+  //wheel_calib(rc[2]);
+  //wheel_test();
+  //HMC_print();
   //control();
  }

@@ -1,20 +1,20 @@
 #ifndef _PinDef_H_
 #define _PinDef_H_
 
-#define w1n  22	
-#define w1p  23
-#define w1e  3
+#define w1n  52	
+#define w1p  53
+#define w1e  2
 
-#define w2n  24	
-#define w2p  25
-#define w2e  4
+#define w2n  30	
+#define w2p  31
+#define w2e  7
 
-#define w3n  26	
-#define w3p  27
-#define w3e  5
+#define w3n  32	
+#define w3p  33
+#define w3e  8
 
-#define w4n  28	
-#define w4p  29
-#define w4e  6
+#define w4n  47	
+#define w4p  48
+#define w4e  3
 
 #endif
