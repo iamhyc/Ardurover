@@ -1,39 +1,36 @@
-
-/*	Rover Arduino Version
- *	This is the initialization part.
- *	Teamwork: 
- */
-
-/* Libarary Include */
-#include <SBUS.h>
-#include <Wire.h>
-#include <JY901.h>
-
-/* User src Include */
 #include "chasis.h"
-#include "rc.h"
+#include "SBUS_Ctrl.h"
+#include "function.h"
 
-/* Pre-setup part */
-SBUS sbus(Serial3);
-// Use Timer2, Triggers ever 1ms
-ISR(TIMER2_COMPA_vect)
+int rc[16] = {0};
+
+void setup()
 {
-  sbus.process();
-}
+  PinMode_Initilization();
 
-void setup() {
+  HMC_Initialization();//I2C
+  GPS_Initialization();//Serial1,9600
+
+  SBUS_Initilization();//Serial3,100000
+
+  Serial2.begin(9600);//Serial BT Debug
+  Serial.begin(9600);
   
-  /*Chasis Pin Setup*/
-  pinMode(w1n, OUTPUT); pinMode(w1p, OUTPUT); pinMode(w1e, OUTPUT);
-  pinMode(w2n, OUTPUT); pinMode(w2p, OUTPUT); pinMode(w2e, OUTPUT);
-  pinMode(w3n, OUTPUT); pinMode(w3p, OUTPUT); pinMode(w3e, OUTPUT);
-  pinMode(w4n, OUTPUT); pinMode(w4p, OUTPUT); pinMode(w4e, OUTPUT);
-
-  /*Remote Control Setup*/
-  sbus.begin();
+  //Auto_Initialization();
 }
 
-void loop() {
+void loop()
+{
+  SBUS_update();
+  SBUS_Normlize();
+  TransMove(rc[1], rc[0], rc[3]);
+  /*if(rc[7] > 0)
+    Transmove(rc[1], rc[0], rc[3]);
+  else
+    automove();*/
 
-  
-}
+  //wheel_calib(rc[2]);
+  //wheel_test();
+  //HMC_print();
+  //control();
+ }
