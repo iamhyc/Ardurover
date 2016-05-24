@@ -54,17 +54,33 @@ void JY901_print() {
 
 /****************HMC5983**************************/
 HMC5983 compass;
+static float HMC_angle = 0.0;
+static float HMC_alpha = 0.9;
+static bool HMC_last_dir = 0;
+static bool HMC_current_dir = 0;
+
 void HMC_Initialization() {
 	//I2C communication
 	compass.begin();
 }
 
-float HMC_getAngle() {//Synchronous
+float HMC_update() {//Synchronous
 	float rs = -999;
 	rs = compass.read();
-	//with kalman filter
-	if (rs != -999) return rs;
-  else return 0;
+	//with lowpass filter
+	if (rs != -999) {
+		/*HMC_current_dir = (rs-HMC_angle>0)?1:0;
+		if (HMC_current_dir != HMC_last_dir) {
+			return;
+		}
+		HMC_last_dir = HMC_current_dir;*/
+		HMC_angle = HMC_alpha * HMC_angle 
+				+ (1- HMC_alpha) * rs;
+	}
+}
+
+float HMC_getAngle() {
+	return HMC_angle;
 }
 
 void HMC_print() {
@@ -94,12 +110,17 @@ float GPS_Locate(String ins) {
 		return M8_Gps.latitude;//
 	if (ins=="LNG"||ins=="longitude"||ins=="Longitude")
 		return M8_Gps.longitude;//
+	if (ins=="speed"||ins=="Speed")
+		return M8_Gps.speed;//
+	if (ins=="time"||ins=="timestamp")
+		return M8_Gps.datetime.timestamp;//
 	if (ins=="SU"||ins=="sats_in_use")
 		return M8_Gps.sats_in_use;//
 	if (ins=="SV"||ins=="sats_in_view")
 		return M8_Gps.sats_in_view;//
+
 	if (ins=="alt"||ins=="ALT"||ins=="altitude"||ins=="Altitude")
-		return M8_Gps.sats_in_view;//
+		return M8_Gps.altitude//
 
 	return -1;
 }
@@ -120,3 +141,4 @@ void GPS_print() {
 	Serial.print("SV");Serial.println(M8_Gps.sats_in_view, 6);
 	Serial.println();
 }
+

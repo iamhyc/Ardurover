@@ -47,6 +47,7 @@ public:
         uint8_t day, month, year;
         uint8_t hours, minutes, seconds;
         uint16_t millis;
+        uint32_t timestamp;
         bool valid; //1 = yes, 0 = no
     };
 

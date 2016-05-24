@@ -11,3 +11,4 @@ void Auto_Initialization() {
 	init_location[0] = GPS_Locate("LAT");
 	init_location[1] = GPS_Locate("LNT");
 }
+

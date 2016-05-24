@@ -22,6 +22,7 @@ void setup()
 void loop()
 {
   SBUS_update();
+  HMC_update();
   SBUS_Normlize();
   TransMove(rc[1], rc[0], rc[3]);
   /*if(rc[7] > 0)
