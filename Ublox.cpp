@@ -334,7 +334,7 @@ void Ublox::read_rmc()
         break;
         case 9:
         {
-            datetime.timestamp = atoi(token);
+            uint32_t date = atoi(token);
             datetime.year = fmod(date, 100);
             date /= 100;
             datetime.month = fmod(date, 100);
@@ -411,6 +411,5 @@ uint8_t Ublox::parse_hex(char c)
         return (c - 'A')+10;
     return 0;
 }
-
 
 

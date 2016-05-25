@@ -13,8 +13,8 @@ void setup()
 
   SBUS_Initilization();//Serial3,100000
 
-  Serial2.begin(9600);//Serial BT Debug
-  Serial.begin(9600);
+  Serial2.begin(115200);//Serial BT Debug
+  Serial.begin(115200);
   
   //Auto_Initialization();
 }
@@ -24,7 +24,10 @@ void loop()
   SBUS_update();
   HMC_update();
   SBUS_Normlize();
-  TransMove(rc[1], rc[0], rc[3]);
+
+  HMC_print();
+  delay(50);
+  //TransMove(rc[1], rc[0], rc[3]);
   /*if(rc[7] > 0)
     Transmove(rc[1], rc[0], rc[3]);
   else

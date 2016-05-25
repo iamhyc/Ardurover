@@ -3,6 +3,7 @@
 #include <JY901.h>
 #include <HMC5983.h>
 #include "Ublox.h"
+#include "function.h"
 //#include <Servo.h>
 
 /********************JY901************************/
@@ -62,18 +63,22 @@ static bool HMC_current_dir = 0;
 void HMC_Initialization() {
 	//I2C communication
 	compass.begin();
+  delay(50);
+  HMC_angle = compass.read();
 }
 
-float HMC_update() {//Synchronous
+void HMC_update() {//Synchronous
 	float rs = -999;
 	rs = compass.read();
 	//with lowpass filter
 	if (rs != -999) {
-		/*HMC_current_dir = (rs-HMC_angle>0)?1:0;
+		HMC_current_dir = (rs-HMC_angle>0)?1:0;
 		if (HMC_current_dir != HMC_last_dir) {
+			HMC_last_dir = HMC_current_dir;
 			return;
 		}
-		HMC_last_dir = HMC_current_dir;*/
+		HMC_last_dir = HMC_current_dir;
+		//HMC_alpha = map(rot_abs(HMC_angle-rs), 0, 100, 1, 0.01)
 		HMC_angle = HMC_alpha * HMC_angle 
 				+ (1- HMC_alpha) * rs;
 	}
@@ -112,15 +117,15 @@ float GPS_Locate(String ins) {
 		return M8_Gps.longitude;//
 	if (ins=="speed"||ins=="Speed")
 		return M8_Gps.speed;//
-	if (ins=="time"||ins=="timestamp")
-		return M8_Gps.datetime.timestamp;//
+	//if (ins=="time"||ins=="timestamp")
+		//return M8_Gps.datetime.timestamp;//
 	if (ins=="SU"||ins=="sats_in_use")
 		return M8_Gps.sats_in_use;//
 	if (ins=="SV"||ins=="sats_in_view")
 		return M8_Gps.sats_in_view;//
 
 	if (ins=="alt"||ins=="ALT"||ins=="altitude"||ins=="Altitude")
-		return M8_Gps.altitude//
+		return M8_Gps.altitude;//
 
 	return -1;
 }
