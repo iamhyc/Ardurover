@@ -13,7 +13,7 @@ void setup()
 
   SBUS_Initilization();//Serial3,100000
 
-  Serial2.begin(115200);//Serial BT Debug
+  Serial2.begin(9600);//Serial BT Debug
   Serial.begin(115200);
   
   //Auto_Initialization();
@@ -25,7 +25,7 @@ void loop()
   HMC_update();
   SBUS_Normlize();
 
-  HMC_print();
+  //HMC_print();
   delay(50);
   //TransMove(rc[1], rc[0], rc[3]);
   /*if(rc[7] > 0)

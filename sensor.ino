@@ -55,16 +55,16 @@ void JY901_print() {
 
 /****************HMC5983**************************/
 HMC5983 compass;
+static const float HMC_thresold = 1.0;
 static float HMC_angle = 0.0;
-static float HMC_alpha = 0.9;
-static bool HMC_last_dir = 0;
-static bool HMC_current_dir = 0;
+static float HMC_alpha = 0.90;
+
 
 void HMC_Initialization() {
 	//I2C communication
 	compass.begin();
-  delay(50);
-  HMC_angle = compass.read();
+  	delay(50);
+  	HMC_angle = compass.read();
 }
 
 void HMC_update() {//Synchronous
@@ -72,13 +72,12 @@ void HMC_update() {//Synchronous
 	rs = compass.read();
 	//with lowpass filter
 	if (rs != -999) {
-		HMC_current_dir = (rs-HMC_angle>0)?1:0;
-		if (HMC_current_dir != HMC_last_dir) {
-			HMC_last_dir = HMC_current_dir;
-			return;
-		}
-		HMC_last_dir = HMC_current_dir;
-		//HMC_alpha = map(rot_abs(HMC_angle-rs), 0, 100, 1, 0.01)
+		float tmp = abs(rs - HMC_angle);
+		if (tmp > HMC_thresold)
+			HMC_alpha = 0.20;
+		else
+			HMC_alpha = 0.90;
+
 		HMC_angle = HMC_alpha * HMC_angle 
 				+ (1- HMC_alpha) * rs;
 	}
