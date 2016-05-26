@@ -72,7 +72,7 @@ void HMC_update() {//Synchronous
 	rs = compass.read();
 	//with lowpass filter
 	if (rs != -999) {
-		float tmp = abs(rs - HMC_angle);
+		float tmp = rot_abs(rs - HMC_angle);
 		if (tmp > HMC_thresold)
 			HMC_alpha = 0.20;
 		else

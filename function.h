@@ -7,5 +7,6 @@
 //进行相应的全局变量和结构体类型定义
 
 int __fix(int);
+float rot_abs(float);
 
 #endif
