@@ -25,8 +25,9 @@ void loop()
   HMC_update();
   SBUS_Normlize();
 
-  //HMC_print();
+  HMC_print();
   delay(50);
+  TransMove(200, 0, 0);
   //TransMove(rc[1], rc[0], rc[3]);
   /*if(rc[7] > 0)
     Transmove(rc[1], rc[0], rc[3]);
