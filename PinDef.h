@@ -17,4 +17,9 @@
 #define w4p  48
 #define w4e  3
 
+#define LED_RED 28
+
+void LED_RED_ON(void);
+void LED_RED_OFF(void);
+
 #endif

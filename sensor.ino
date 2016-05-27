@@ -3,6 +3,7 @@
 #include <JY901.h>
 #include <HMC5983.h>
 #include "Ublox.h"
+#include "PinDef.h"
 #include "function.h"
 //#include <Servo.h>
 
@@ -109,7 +110,7 @@ void GPS_update() {//Synchronous
 	}
 }
 
-float GPS_Locate(String ins) {
+float GPS_get(String ins) {
 	if (ins=="LAT"||ins=="latitude"||ins=="Latitude")
 		return M8_Gps.latitude;//
 	if (ins=="LNG"||ins=="longitude"||ins=="Longitude")
@@ -130,8 +131,9 @@ float GPS_Locate(String ins) {
 }
 
 bool GPS_Locate_pc(){
-	while(GPS_Locate("SU") < 7){
-		delay(1000);
+	if(GPS_Locate("SU") < 7){
+		GPS_update();
+		return false;
 	}
 	//with kalman filter
 	return true;

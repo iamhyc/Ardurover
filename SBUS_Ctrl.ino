@@ -53,7 +53,8 @@ void SBUS_Normlize() {
 	rc[2] = norm_sgn255(R3L_CH3, R3M_CH3, R3H_CH3, rc[2]);
 	rc[3] = norm_sgn255(R3L_CH4, R3M_CH4, R3H_CH4, rc[3]);
 	//ch5, ch7...
-
+	rc[4] = norm_sgn3(rc[4]);
+	rc[6] = norm_sgn3(rc[6]);
 }
 
 void SBUS_print() {

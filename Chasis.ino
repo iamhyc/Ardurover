@@ -65,7 +65,7 @@ void TransMove(float vf, float vtr, float vrr) {
 
 float TransMove_Control(float current_angle, float target_angle)
 {
-    const float g_p = 1.0;
+    const float g_p = 20.0;
     const float g_i = 0.0;
     const float g_d = 0.0;
     
@@ -80,7 +80,7 @@ float TransMove_Control(float current_angle, float target_angle)
 			+ error_g[2] * g_i 
 			+ (error_g[2] - error_g[1]) * g_d;
 
-    return __fix(vrr_out);
+    return -__fix(vrr_out);
 }
 
 void Wheel_Stop() {
@@ -112,7 +112,7 @@ void wheel_test() {
   delay(4000);
 }
 
-float this_val = 90.0;
+//float this_val = 90.0;
 void wheel_calib(float v) {
   Wheel_Ctrl(w2, +255);
   Wheel_Ctrl(w3, -255);
