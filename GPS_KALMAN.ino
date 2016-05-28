@@ -101,7 +101,7 @@ void KalmanData(){
 
           Matrix.Transpose((float*)Matrix_A, 4, 4, (float *)Matrix_A_Trans);
           Matrix.Multiply((float*)Matrix_A, (float*)Matrix_P, 4, 4, 4, (float*)Matrix_Tmp44_1);
-          Matrix.Multiply((float*)Matrix_Tmp1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
+          Matrix.Multiply((float*)Matrix_Tmp44_1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
           Matrix.Add((float*)Matrix_Tmp2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
           /*************Line 81 of Matlab code*************/
           /**
@@ -119,43 +119,49 @@ void KalmanData(){
           float Matrix_Tmp22_2[2][2] = {0,0};
           float Matrix_Tmp42[4][2] = {0,0,0,0};
           
-          Matrix.Multiply((float*)Matrx_H, (float*)Matrix_P_Estimate, 2, 4, 4, (float*)Matrix_Tmp24);
+          Matrix.Multiply((float*)Matrix_H, (float*)Matrix_P_Estimate, 2, 4, 4, (float*)Matrix_Tmp24);
           Matrix.Multiply((float*)Matrix_Tmp24, (float*)Matrix_H_Trans, 2, 4, 2, (float*)Matrix_Tmp22_1);
           Matrix.Add((float*)Matrix_Tmp22_1, (float*)Matrix_R, 2, 2, (float*)Matrix_Tmp22_2);
-
+          /*************/
           Matrix.Multiply((float*)Matrix_P_Estimate, (float*)Matrix_H_Trans, 4, 4, 2, (float*) Matrix_Tmp42);
           Matrix.Multiply((float*)Matrix_Tmp42, (float*)Matrix_Tmp22_2, 4, 2, 2, (float*)KalmanGain);
 
+
           LEN_DATA[0] = (float) (GPS_data[0][0]-firstGPS_data[0][0])*PI/180*Rearth/10000000;
-          LEN_DATA[1] = (float) (GPS_data[0][1]-firstGPS_data[0][1])*PI/180*Rearth*cosLat/10000000;     
-          float ZkTranspose[2][1] = { //We only need the transposed version of this, so we do it right here.
-                {LEN_DATA[0]},
-                {LEN_DATA[1]},
-                }; 
-          float IntermediateProductMatrix4[2][1] = {0,0};
-          float IntermediateProductMatrix5[4][1] = {0,0,0,0};
-          float IntermediateSubtractionMatrix[2][1] = {0,0};
-          Matrix.Multiply((float*) Hmatrix, (float*) Xstate_Estimate, 2,4,1, (float*) IntermediateProductMatrix4);
-          Matrix.Subtract((float*) ZkTranspose, (float*) IntermediateProductMatrix4, 2, 1, (float*) IntermediateSubtractionMatrix);
-          Matrix.Multiply((float*) KalmanGain, (float*) IntermediateSubtractionMatrix, 4,2,1, (float*) IntermediateProductMatrix5); //Reuse intermediate matrix because it has appropriate dimensions
-          Matrix.Add((float*) Xstate_Estimate, (float*) IntermediateProductMatrix5, 4,1, (float*) Xstate); //NO NEED TO TRANSPOSE X STATE. WE DID THAT IN MATLAB FOR CONVENIENCE
+          LEN_DATA[1] = (float) (GPS_data[0][1]-firstGPS_data[0][1])*PI/180*Rearth*cosLat/10000000;
+
+          //We only need the transposed version of this, so we do it right here.
+          /**
+          * Matrix_Ans = Multiply(Matrix_H, Xstate_Estimate)
+          * Matrix_Ans = Substract(Zk_Trans, Matrix_Ans)
+          * Matrix_Ans = Multiply(KalmanGain, Matrix_Ans)
+          * Xstate     = Add(Xstate_Estimate, Matrix_Ans)
+          * X[k] = X[k+1] + KalmanGain*{Z[k](T)-H*X[k+1]}
+          **/
+          float ZkTranspose[2][1] = {
+            {LEN_DATA[0]},
+            {LEN_DATA[1]},
+          }; 
+          float Matrix_Tmp21[2][1] = {0,0};
+          float Matrix_Tmp41[4][1] = {0,0,0,0};
+
+          Matrix.Multiply((float*)Matrix_H, (float*)Xstate_Estimate, 2, 4, 1, (float*)Matrix_Tmp21);
+          Matrix.Subtract((float*)ZkTranspose, (float*)Matrix_Tmp21, 2, 1, (float*) Matrix_Tmp21);
+          Matrix.Multiply((float*)KalmanGain, (float*)Matrix_Tmp21, 4, 2, 1, (float*) Matrix_Tmp41); 
+          //Reuse intermediate matrix because it has appropriate dimensions
+          Matrix.Add((float*)Xstate_Estimate, (float*)Matrix_Tmp41, 4, 1, (float*)Xstate); 
+          //NO NEED TO TRANSPOSE X STATE. WE DID THAT IN MATLAB FOR CONVENIENCE
+
           /*************Line 84 of Matlab code*************/
-          Matrix.Multiply((float*) KalmanGain, (float*) Hmatrix, 4,2,4, (float*) IntermediateProductMatrix); //Reuse this intermediate matrix because it's 4x4 and we need 4x4
-          float IdentityMatrix[4][4] = {
-                {1,0,0,0},
-                {0,1,0,0},
-                {0,0,1,0},
-                {0,0,0,1},
-          };
-          Matrix.Subtract((float*) IdentityMatrix, (float*) IntermediateProductMatrix, 4,4, (float*) IntermediateQuotientMatrix); //Reuse this intermediate matrix because it's 4x4 and we need 4x4.
-          Matrix.Multiply((float*) IntermediateQuotientMatrix, (float*) PerrorCovarianceEstimate, 4,4,4, (float*) PerrorCovariance);
-          GPS_DI_Print();
-        
+          Matrix.Multiply((float*)KalmanGain, (float*)Matrix_H, 4, 2, 4, (float*)Matrix_Tmp44_1);
+          Matrix.Subtract((float*)Matrix_I, (float*)Matrix_Tmp44_1, 4,4, (float*)Matrix_Tmp44_2);
+          Matrix.Multiply((float*)Matrix_Tmp44_2, (float*)Matrix_P_Estimate, 4,4,4, (float*)Matrix_P);
+          //GPS_DI_Print();
 }
 
 void KalmanNoData(){
-          uint64_t currentLOC_TIME = (int32_t) millis();  
-          delta_T = (float) (currentLOC_TIME - LOC_TIME) / 1000; //LOC_TIME elapsed in seconds
+          uint64_t currentTime = (int32_t)millis();  
+          delta_T = (float) (currentTime - LOC_TIME) / 1000; //LOC_TIME elapsed in seconds
           float Matrix_A[4][4] = {
                  {1, 0,  delta_T, 0      },
                  {0, 1,  0,       delta_T},
@@ -168,18 +174,26 @@ void KalmanNoData(){
                 {0},
                 {0},
           };    
-          Matrix.Multiply((float*) Matrix_A, (float*) Xstate, 4, 4, 1, (float*) Xstate_Estimate);
+          Matrix.Multiply((float*)Matrix_A, (float*)Xstate, 4, 4, 1, (float*)Xstate_Estimate);
           Xstate[0][0] = Xstate_Estimate[0][0];
           Xstate[1][0] = Xstate_Estimate[1][0];
           Xstate[2][0] = Xstate_Estimate[2][0];
           Xstate[3][0] = Xstate_Estimate[3][0];
                     
           /*************Line 78 of Matlab code*************/
-          Cal_Line78();
+          float Matrix_P_Estimate[4][4] = {0, 0, 0, 0};
+          float Matrix_A_Trans[4][4] = {0, 0, 0, 0};
+          float Matrix_Tmp44_1[4][4] = {0, 0, 0, 0};
+          float Matrix_Tmp44_2[4][4] = {0, 0, 0, 0};
+
+          Matrix.Transpose((float*)Matrix_A, 4, 4, (float *)Matrix_A_Trans);
+          Matrix.Multiply((float*)Matrix_A, (float*)Matrix_P, 4, 4, 4, (float*)Matrix_Tmp44_1);
+          Matrix.Multiply((float*)Matrix_Tmp1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
+          Matrix.Add((float*)Matrix_Tmp2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
 
           for (int j = 0; j < 4; j++){
             for (int k = 0; k < 4; k++){
-              PerrorCovariance[j][k] = PerrorCovarianceEstimate[j][k];
+              Matrix_P[j][k] = Matrix_P_Estimate[j][k];
             }
           }          
           GPS_DN_Print();
@@ -230,5 +244,5 @@ void GPS_DN_Print() {
   Serial.print(9999);Serial.print(",");
   Serial.print(-1.0);Serial.print(",");
   Serial.print(-1.0);Serial.print(",");
-  Serial.println((uint32_t)currentLOC_TIME);
+  Serial.println((uint32_t)currentTime);
 }

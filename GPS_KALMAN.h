@@ -28,4 +28,11 @@ const float Matrix_H_Trans[4][2] = {
   {0.0, 0.0},
 };
 
+const float Matrix_I[4][4] = {
+  {1,0,0,0},
+  {0,1,0,0},
+  {0,0,1,0},
+  {0,0,0,1},
+};
+
 #endif
