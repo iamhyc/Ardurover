@@ -3,6 +3,7 @@
 #include <JY901.h>
 #include <HMC5983.h>
 #include "Ublox.h"
+#include "GPS_KALMAN.h"
 #include "PinDef.h"
 #include "function.h"
 //#include <Servo.h>
@@ -97,7 +98,6 @@ void HMC_print() {
 /***************Ublox GPS*************************/
 #define GPS_BAUD 9600
 #define EARTH_RADIUS 6378.137;
-unsigned long LOC_TIME;
 static float GPS_latitude;
 static float GPS_Longitude;
 

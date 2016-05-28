@@ -1,5 +1,6 @@
 #include "chasis.h"
 #include "SBUS_Ctrl.h"
+#include "GPS_KALMAN.h"
 #include "function.h"
 
 int init_location[] = {0, 0, 0};//Latitude, Longtitude
@@ -7,6 +8,7 @@ int init_location[] = {0, 0, 0};//Latitude, Longtitude
 //static bool calib_flag = false;
 
 extern int rc[16];
+extern float Xstate[4][1];
 
 void Auto_Initialization() {
 	GPS_update();
@@ -41,7 +43,9 @@ void AutoMove(char sw) {
 }
 
 void Naviback() {
-	GPS_update();
+	GPS_update_kalman();
+  float current_lat = Xstate[0][1];
+  float current_lng = Xstate[1][1];
 	if(!GPS_Locate_pc()) return;
 		
 	return;

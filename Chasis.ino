@@ -94,22 +94,22 @@ void wheel_test() {
   Serial.println("run");
   float num = 255;
   Wheel_Ctrl(w1, num);
-  delay(2000);
-  Wheel_Ctrl(w1, 0);
+  //delay(2000);
+  //Wheel_Ctrl(w1, 0);
   
   Wheel_Ctrl(w2, num);
-  delay(2000);
-  Wheel_Ctrl(w2, 0);
+  //delay(2000);
+  //Wheel_Ctrl(w2, 0);
   
   Wheel_Ctrl(w3, num);
-  delay(2000);
-  Wheel_Ctrl(w3, 0);
+  //delay(2000);
+  //Wheel_Ctrl(w3, 0);
   
   Wheel_Ctrl(w4, num); 
-  delay(2000);
-  Wheel_Ctrl(w4, 0); 
+  //delay(2000);
+  //Wheel_Ctrl(w4, 0); 
 
-  delay(4000);
+  //delay(4000);
 }
 
 float this_val = 90.0;

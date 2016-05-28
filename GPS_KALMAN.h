@@ -1,10 +1,10 @@
 #ifndef __GPS_KALMAN_H__
 #define __GPS_KALMAN_H__
 
-#include <MatrixMath.h>
+#include "MatrixMath.h"
 #include <math.h>
 
-#define Rearth	6378137;
+const uint64_t Rearth	= 6378137;
 
 const float Matrix_R[2][2] = {
   {2.21017383364137, 3.51637078682249},
@@ -34,5 +34,7 @@ const float Matrix_I[4][4] = {
   {0,0,1,0},
   {0,0,0,1},
 };
+
+void GPS_update_kalman();
 
 #endif

@@ -1,10 +1,11 @@
-
-#include "GPS_With_KALMAN.h"
+#include "Ublox.h"
+#include "GPS_KALMAN.h"
 
 bool GPS_Init_Flag = false;
 float cosLat = 0.0;  
-
+extern Ublox M8_Gps;
 /****************************************/
+unsigned long LOC_TIME = 0;
 float delta_T = 0; 
 //((float) (GPS_data[GPS_INDEX][2] - GPS_data[GPS_INDEX-1][2])) / 1000; 
 //LOC_TIME elapsed in seconds
@@ -38,9 +39,9 @@ int64_t firstGPS_data[1][3] = {
         {0,0,0},
 };
 
-void GPS_update_pc()
+void GPS_update_kalman()
 {
-  if(Serial3.available())
+  if(Serial1.available())
   {
     M8_Gps.encode(Serial1.read());
 
@@ -51,7 +52,7 @@ void GPS_update_pc()
     prevGPS_data[0][2] = GPS_data[0][2];
     
     GPS_data[0][0] = GPS_get("LAT");
-    GPS_data[0][1] = GPW_get("LON");
+    GPS_data[0][1] = GPS_get("LON");
     GPS_data[0][2] = (uint64_t)LOC_TIME;           
         
     //Test for valid GPS data in Continental U.S. 
@@ -102,7 +103,7 @@ void KalmanData(){
           Matrix.Transpose((float*)Matrix_A, 4, 4, (float *)Matrix_A_Trans);
           Matrix.Multiply((float*)Matrix_A, (float*)Matrix_P, 4, 4, 4, (float*)Matrix_Tmp44_1);
           Matrix.Multiply((float*)Matrix_Tmp44_1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
-          Matrix.Add((float*)Matrix_Tmp2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
+          Matrix.Add((float*)Matrix_Tmp44_2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
           /*************Line 81 of Matlab code*************/
           /**
           * Matrix_Ans = Multiply(Matrix_H, Matrix_P_Estimate)
@@ -114,7 +115,7 @@ void KalmanData(){
           * GAIN = {P[k+1]*H(T)}*{H*P[k+1]*H(T) + R}
           **/
           float KalmanGain[4][2] = {0,0,0,0};
-          float Matrix_Tmp24[2][4] = {0,0}
+          float Matrix_Tmp24[2][4] = {0,0};
           float Matrix_Tmp22_1[2][2] = {0,0};
           float Matrix_Tmp22_2[2][2] = {0,0};
           float Matrix_Tmp42[4][2] = {0,0,0,0};
@@ -188,8 +189,8 @@ void KalmanNoData(){
 
           Matrix.Transpose((float*)Matrix_A, 4, 4, (float *)Matrix_A_Trans);
           Matrix.Multiply((float*)Matrix_A, (float*)Matrix_P, 4, 4, 4, (float*)Matrix_Tmp44_1);
-          Matrix.Multiply((float*)Matrix_Tmp1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
-          Matrix.Add((float*)Matrix_Tmp2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
+          Matrix.Multiply((float*)Matrix_Tmp44_1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
+          Matrix.Add((float*)Matrix_Tmp44_2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
 
           for (int j = 0; j < 4; j++){
             for (int k = 0; k < 4; k++){
@@ -200,34 +201,14 @@ void KalmanNoData(){
           LOC_TIME = millis();       
 }
 
-/*************Line 78 of Matlab code*************/
-/** Cal_Line78 Function
-  Transpose: Matrix-A
-  Multiply:  Matrix-A, Matrix-P
-  Multiply:  Matrix-Ans, Matrix-A(T)
-  ADD:       Matrix-Ans, Matrix-Q
-  Q + A*Cov*A(T)
-**/ 
-inline void Cal_Line78() {
-  float Matrix_P_Estimate[4][4] = {0, 0, 0, 0};
-  float Matrix_A_Trans[4][4] = {0, 0, 0, 0};
-  float Matrix_Tmp44_1[4][4] = {0, 0, 0, 0};
-  float Matrix_Tmp44_2[4][4] = {0, 0, 0, 0};
-
-  Matrix.Transpose((float*)Matrix_A, 4, 4, (float *)Matrix_A_Trans);
-  Matrix.Multiply((float*)Matrix_A, (float*)Matrix_P, 4, 4, 4, (float*)Matrix_Tmp44_1);
-  Matrix.Multiply((float*)Matrix_Tmp1, (float*)Matrix_A_Trans, 4, 4, 4, (float*)Matrix_Tmp44_2);
-  Matrix.Add((float*)Matrix_Tmp2, (float*)Matrix_Q, 4, 4, (float*)Matrix_P_Estimate);
-}
-
 void GPS_DI_Print() {
   Serial.print(Xstate[0][0]);Serial.print(",");
   Serial.print(Xstate[1][0]);Serial.print(",");
   Serial.print(Xstate[2][0]);Serial.print(",");
   Serial.print(Xstate[3][0]);Serial.print(",");
 
-  Serial.print(ZkTranspose[0][0]);Serial.print(",");
-  Serial.print(ZkTranspose[1][0]);Serial.print(",");
+  //Serial.print(ZkTranspose[0][0]);Serial.print(",");
+  //Serial.print(ZkTranspose[1][0]);Serial.print(",");
   Serial.print((int32_t) GPS_data[0][0]);Serial.print(",");
   Serial.print((int32_t) GPS_data[0][1]);Serial.print(",");
   Serial.println((int32_t) GPS_data[0][2]);
@@ -244,5 +225,5 @@ void GPS_DN_Print() {
   Serial.print(9999);Serial.print(",");
   Serial.print(-1.0);Serial.print(",");
   Serial.print(-1.0);Serial.print(",");
-  Serial.println((uint32_t)currentTime);
+  //Serial.println((uint32_t)currentTime);
 }

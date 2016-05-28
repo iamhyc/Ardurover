@@ -20,13 +20,13 @@ void setup()
 
 void loop()
 {
-  SBUS_update();
-  HMC_update();
-  SBUS_Normlize();
+  //SBUS_update();
+  //HMC_update();
+  //SBUS_Normlize();
 
   //HMC_print();
   //TransMove(200, 0, 0);
-  AutoMove(rc[6]);
+  //AutoMove(rc[6]);
   //wheel_calib(rc[2]);
-  //wheel_test();
+  wheel_test();
  }
