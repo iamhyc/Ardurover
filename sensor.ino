@@ -97,6 +97,7 @@ void HMC_print() {
 /***************Ublox GPS*************************/
 #define GPS_BAUD 9600
 #define EARTH_RADIUS 6378.137;
+unsigned long LOC_TIME;
 static float GPS_latitude;
 static float GPS_Longitude;
 
@@ -108,6 +109,12 @@ void GPS_Initialization() {
 }
 
 void GPS_update() {//Synchronous
+	while(Serial1.available()){
+		M8_Gps.encode(Serial1.read());
+	}
+}
+
+void GPS_update_pc() {//Synchronous
 	while(Serial1.available()){
 		M8_Gps.encode(Serial1.read());
 	}
