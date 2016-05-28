@@ -58,7 +58,7 @@ void JY901_print() {
 HMC5983 compass;
 static const float HMC_thresold = 1.0;
 static float HMC_angle = 0.0;
-static float HMC_alpha = 0.90;
+static float HMC_alpha = 0.95;//0.15
 
 
 void HMC_Initialization() {
@@ -75,9 +75,9 @@ void HMC_update() {//Synchronous
 	if (rs != -999) {
 		float tmp = rot_abs(rs - HMC_angle);
 		if (tmp > HMC_thresold)
-			HMC_alpha = 0.20;
+			HMC_alpha = 0.15;
 		else
-			HMC_alpha = 0.90;
+			HMC_alpha = 0.95;
 
 		HMC_angle = HMC_alpha * HMC_angle 
 				+ (1- HMC_alpha) * rs;
@@ -96,6 +96,9 @@ void HMC_print() {
 
 /***************Ublox GPS*************************/
 #define GPS_BAUD 9600
+#define EARTH_RADIUS 6378.137;
+static float GPS_latitude;
+static float GPS_Longitude;
 
 Ublox M8_Gps;
 // Altitude - Latitude - Longitude - N Satellites
@@ -131,12 +134,27 @@ float GPS_get(String ins) {
 }
 
 bool GPS_Locate_pc(){
-	if(GPS_Locate("SU") < 7){
-		GPS_update();
+	int sats = (int)GPS_get("SU");
+	if((sats == NULL) || (sats < 6)){
 		return false;
 	}
-	//with kalman filter
+	//with a filter
+
 	return true;
+}
+
+float GPS_calc(float lat1, float lng1, float lat2, float lng2) {
+	lat1 = lat1 * DEG_TO_RAD;
+   	lat2 = lat2 * DEG_TO_RAD;
+
+   	float lat_del = sin((lat1 - lat2)/2);
+   	float lng_del = sin((lng1 - lng2) * DEG_TO_RAD/2);
+
+   	float s = 2 * asin( sqrt( lat_del*lat_del + cos(lat1)*cos(lat2)*lng_del*lng_del ) );
+
+   	s = s * EARTH_RADIUS;
+   	s = round(s * 10000) / 10000;
+   	return s;
 }
 
 void GPS_print() {

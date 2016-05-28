@@ -21,5 +21,6 @@
 
 void LED_RED_ON(void);
 void LED_RED_OFF(void);
+void LED_RED_BLINK(int);
 
 #endif

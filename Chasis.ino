@@ -38,13 +38,13 @@ void Wheel_Ctrl(AWheel wl, float val) {
 	}
 }
 
-void TransMove(float vf, float vtr, float vrr) {
+void TransMove(float vfr, float vtr, float vrr) {
 
-	int top_speed=maxs(abs(vf),maxs(abs(vtr),abs(vrr)));
-	int vt=abs(vf)+abs(vtr)+abs(vrr);
+	int top_speed=maxs(abs(vfr),maxs(abs(vtr),abs(vrr)));
+	int vt=abs(vfr)+abs(vtr)+abs(vrr);
 	if (vt!=0)
 	{
-		vf = (vf*top_speed)/vt;
+		vfr = (vfr*top_speed)/vt;
 		vtr = (vtr*top_speed)/vt;
 		vrr = (vrr*top_speed)/vt;
 	}
@@ -56,10 +56,10 @@ void TransMove(float vf, float vtr, float vrr) {
 		target_angle = HMC_getAngle();
 	}
 	
-	Wheel_Ctrl(w1, vf - vtr - ROTP * vrr);
-	Wheel_Ctrl(w2, vf + vtr + ROTP * vrr);
-	Wheel_Ctrl(w3, vf - vtr + ROTP * vrr);
-	Wheel_Ctrl(w4, vf + vtr - ROTP * vrr);
+	Wheel_Ctrl(w1, vfr - vtr - ROTP * vrr);
+	Wheel_Ctrl(w2, vfr + vtr + ROTP * vrr);
+	Wheel_Ctrl(w3, vfr - vtr + ROTP * vrr);
+	Wheel_Ctrl(w4, vfr + vtr - ROTP * vrr);
 	
 }
 
@@ -112,7 +112,7 @@ void wheel_test() {
   delay(4000);
 }
 
-//float this_val = 90.0;
+float this_val = 90.0;
 void wheel_calib(float v) {
   Wheel_Ctrl(w2, +255);
   Wheel_Ctrl(w3, -255);

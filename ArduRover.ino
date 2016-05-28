@@ -16,7 +16,6 @@ void setup()
   Serial.begin(115200);
   Serial2.begin(9600);//Serial BT Debug
   
-  //Auto_Initialization();
 }
 
 void loop()
@@ -27,12 +26,7 @@ void loop()
 
   //HMC_print();
   //TransMove(200, 0, 0);
-
-  if(rc[6] > 0)
-    
-  else
-    Automove(rc[6]);
-
+  AutoMove(rc[6]);
   //wheel_calib(rc[2]);
   //wheel_test();
  }

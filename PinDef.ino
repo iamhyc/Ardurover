@@ -22,3 +22,10 @@ void LED_RED_ON() {
 void LED_RED_OFF() {
 	digitalWrite(LED_RED, LOW);
 }
+
+void LED_RED_BLINK(int interval) {
+	LED_RED_ON();
+	delay(interval);
+	LED_RED_OFF();
+	delay(interval);
+}
