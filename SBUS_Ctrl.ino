@@ -3,6 +3,7 @@
 #include "SBUS_Ctrl.h"
 
 extern int rc[16];
+extern bool RM_DRV;
 
 SBUS sbus(Serial3);
 ISR(TIMER2_COMPA_vect)
@@ -46,12 +47,29 @@ int norm_sgn255(int ls, int ms, int hs, int val) {
 	return __fix(val);
 }
 
+int norm_sgnAny(int ls, int ms, int hs, int val, int range) {
+	val = (val - ms) ;
+	if (val > 0)
+		val = val / (hs-ms) * range;
+	else
+		val = val / (ms-ls) * range;
+	return val;
+}
+
 void SBUS_Normlize() {
 	//ch1, ch2, ch3, ch4...
-	rc[0] = norm_sgn255(R3L_CH1, R3M_CH1, R3H_CH1, rc[0]);
-	rc[1] = norm_sgn255(R3L_CH2, R3M_CH2, R3H_CH2, rc[1]);
-	rc[2] = norm_sgn255(R3L_CH3, R3M_CH3, R3H_CH3, rc[2]);
-	rc[3] = norm_sgn255(R3L_CH4, R3M_CH4, R3H_CH4, rc[3]);
+	if(RM_DRV){
+		rc[0] = norm_sgnAny(R3L_CH1, R3M_CH1, R3H_CH1, rc[0], tmp_speed);
+		rc[1] = norm_sgnAny(R3L_CH2, R3M_CH2, R3H_CH2, rc[1], tmp_speed);
+		rc[2] = norm_sgnAny(R3L_CH3, R3M_CH3, R3H_CH3, rc[2], tmp_speed);
+		rc[3] = norm_sgnAny(R3L_CH4, R3M_CH4, R3H_CH4, rc[3], tmp_speed);
+	}
+	else{
+		rc[0] = norm_sgn255(R3L_CH1, R3M_CH1, R3H_CH1, rc[0]);
+		rc[1] = norm_sgn255(R3L_CH2, R3M_CH2, R3H_CH2, rc[1]);
+		rc[2] = norm_sgn255(R3L_CH3, R3M_CH3, R3H_CH3, rc[2]);
+		rc[3] = norm_sgn255(R3L_CH4, R3M_CH4, R3H_CH4, rc[3]);
+	}
 	//ch5, ch7...
 	rc[4] = norm_sgn3(rc[4]);
 	rc[6] = norm_sgn3(rc[6]);

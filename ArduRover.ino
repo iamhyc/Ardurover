@@ -1,8 +1,10 @@
 #include "chasis.h"
+#include "Chasis_RM.h"
 #include "SBUS_Ctrl.h"
 #include "function.h"
 
 int rc[16] = {0};
+bool RM_DRV = true;
 
 void setup()
 {
@@ -12,6 +14,8 @@ void setup()
   GPS_Initialization();//Serial1,9600
 
   SBUS_Initilization();//Serial3,100000
+
+  CAN_DRV_Initialization();//CAN_1000KBPS
 
   Serial.begin(115200);
   Serial2.begin(9600);//Serial BT Debug

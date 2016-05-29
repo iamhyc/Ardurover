@@ -98,8 +98,6 @@ void HMC_print() {
 /***************Ublox GPS*************************/
 #define GPS_BAUD 9600
 #define EARTH_RADIUS 6378.137;
-static float GPS_latitude;
-static float GPS_Longitude;
 
 Ublox M8_Gps;
 // Altitude - Latitude - Longitude - N Satellites
@@ -142,11 +140,11 @@ float GPS_get(String ins) {
 
 bool GPS_Locate_pc(){
 	int sats = (int)GPS_get("SU");
-	if((sats == NULL) || (sats < 6)){
+	if((sats == NULL) || (sats < 3)){//limit as 3 to keep the format correct
 		return false;
 	}
 	//with a filter
-
+	GPS_update_kalman();
 	return true;
 }
 

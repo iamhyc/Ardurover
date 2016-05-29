@@ -1,4 +1,6 @@
+
 #include "chasis.h"
+#include "Chasis_RM.h"
 #include "SBUS_Ctrl.h"
 #include "GPS_KALMAN.h"
 #include "function.h"
@@ -11,14 +13,12 @@ extern int rc[16];
 extern float Xstate[4][1];
 
 void Auto_Initialization() {
-	GPS_update();
-
 	if(!GPS_Locate_pc()) {
 		LED_RED_BLINK(500);
 	}
 	else {
-		init_location[0] = GPS_get("LAT");
-		init_location[1] = GPS_get("LNT");
+		init_location[0] = Xstate[0][1];
+		init_location[1] = Xstate[1][1];
 		init_location[2] = HMC_getAngle();
 		LED_RED_BLINK(100);
 		LED_RED_ON();
@@ -43,10 +43,9 @@ void AutoMove(char sw) {
 }
 
 void Naviback() {
-	GPS_update_kalman();
-  float current_lat = Xstate[0][1];
-  float current_lng = Xstate[1][1];
 	if(!GPS_Locate_pc()) return;
+  	float current_lat = Xstate[0][1];
+  	float current_lng = Xstate[1][1];
 		
 	return;
 }

@@ -52,7 +52,7 @@ void GPS_update_kalman()
     prevGPS_data[0][2] = GPS_data[0][2];
     
     GPS_data[0][0] = GPS_get("LAT");
-    GPS_data[0][1] = GPS_get("LON");
+    GPS_data[0][1] = GPS_get("LNG");
     GPS_data[0][2] = (uint64_t)LOC_TIME;           
         
     //Test for valid GPS data in Continental U.S. 
