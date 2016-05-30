@@ -1,4 +1,5 @@
 #include <mcp_can.h>
+#include <SPI.h>
 #include "Chasis_RM.h"
 
 MCP_CAN CAN(10);
@@ -16,7 +17,7 @@ void CAN_RoboModule_DRV_Reset(unsigned char Number)
 {
     unsigned short can_id = 0x00;
     
-    can_id |= Number<<4; break;
+    can_id |= Number<<4;
     
     RM_Data[0] = 0x55;
     RM_Data[1] = 0x55;
@@ -93,7 +94,7 @@ void CAN_RoboModule_DRV_PWM_Current_Mode(unsigned char Number,short Temp_PWM,sho
     RM_Data[6] = 0x55;
     RM_Data[7] = 0x55;
     
-    CAN.sendMsgBuf(CAN_ID, 0, 8, RM_Data);
+    CAN.sendMsgBuf(can_id, 0, 8, RM_Data);
     delay(100);
 }
 
@@ -108,7 +109,7 @@ void CAN_RoboModule_DRV_PWM_Velocity_Mode(unsigned char Number,short Temp_PWM,sh
 {
     unsigned short can_id = 0x04;
     
-    can_id |= Number<<4; break;
+    can_id |= Number<<4;
 
     Temp_PWM = abs(Temp_PWM);
     if(Temp_PWM > 5000)
@@ -125,7 +126,7 @@ void CAN_RoboModule_DRV_PWM_Velocity_Mode(unsigned char Number,short Temp_PWM,sh
     RM_Data[6] = 0x55;
     RM_Data[7] = 0x55;
     
-    CAN.sendMsgBuf(CAN_ID, 0, 8, RM_Data);
+    CAN.sendMsgBuf(can_id, 0, 8, RM_Data);
     delay(100);
 }
 
@@ -157,17 +158,17 @@ void CAN_RoboModule_DRV_PWM_Position_Mode(unsigned char Number,short Temp_PWM,lo
     RM_Data[6] = (unsigned char)((Temp_Position>>8)&0xff);
     RM_Data[7] = (unsigned char)(Temp_Position&0xff);
     
-    CAN.sendMsgBuf(CAN_ID, 0, 8, RM_Data);
+    CAN.sendMsgBuf(can_id, 0, 8, RM_Data);
     delay(100);
 }
 
-void TransMove_RM(int vfr, int vtr, int vrr)
+void TransMove_RM(int vf, int vtr, int vrr)
 {
-    int top_speed=maxs(abs(vfr),maxs(abs(vtr),abs(vrr)));
-    int vt=abs(vfr)+abs(vtr)+abs(vrr);
+    int top_speed=maxs(abs(vf),maxs(abs(vtr),abs(vrr)));
+    int vt=abs(vf)+abs(vtr)+abs(vrr);
     if (vt!=0)
     {
-        vfr = (vfr*top_speed)/vt;
+        vf = (vf*top_speed)/vt;
         vtr = (vtr*top_speed)/vt;
         vrr = (vrr*top_speed)/vt;
     }

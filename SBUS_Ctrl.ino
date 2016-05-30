@@ -58,6 +58,7 @@ int norm_sgnAny(int ls, int ms, int hs, int val, int range) {
 
 void SBUS_Normlize() {
 	//ch1, ch2, ch3, ch4...
+  int tmp_speed = 225;
 	if(RM_DRV){
 		rc[0] = norm_sgnAny(R3L_CH1, R3M_CH1, R3H_CH1, rc[0], tmp_speed);
 		rc[1] = norm_sgnAny(R3L_CH2, R3M_CH2, R3H_CH2, rc[1], tmp_speed);
