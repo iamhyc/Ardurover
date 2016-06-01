@@ -8,6 +8,8 @@ unsigned char RM_Data[8];
 
 void CAN_DRV_Initialization() {
   CAN.begin(CAN_1000KBPS);
+  CAN_RoboModule_DRV_Reset(0);
+  CAN_RoboModule_DRV_Mode_Choice(0,PWM_VELOCITY_MODE);
 }
 
 /****************************************************************************************
