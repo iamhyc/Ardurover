@@ -155,7 +155,7 @@ void KalmanData(){
           Matrix.Multiply((float*)KalmanGain, (float*)Matrix_H, 4, 2, 4, (float*)Matrix_Tmp44_1);
           Matrix.Subtract((float*)Matrix_I, (float*)Matrix_Tmp44_1, 4,4, (float*)Matrix_Tmp44_2);
           Matrix.Multiply((float*)Matrix_Tmp44_2, (float*)Matrix_P_Estimate, 4,4,4, (float*)Matrix_P);
-          //GPS_DI_Print();
+          GPS_DI_Print();
 }
 
 void KalmanNoData(){
