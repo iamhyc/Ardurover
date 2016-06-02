@@ -6,13 +6,9 @@ extern int rc[16];
 extern bool RM_DRV;
 
 SBUS sbus(Serial3);
-ISR(TIMER2_COMPA_vect)
-{
-  sbus.process();
-}
 
 void SBUS_Initilization() {
-	sbus.begin();
+	sbus.begin(false);
 }
 
 void SBUS_update() {

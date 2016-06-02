@@ -7,7 +7,7 @@
 #include "PinDef.h"
 #include "function.h"
 //#include <Servo.h>
-
+#include <FlexiTimer2.h>
 /********************JY901************************/
 void JY901_Initilization() {
 	//I2C communication
@@ -98,6 +98,7 @@ void HMC_print() {
 /***************Ublox GPS*************************/
 #define GPS_BAUD 9600
 #define EARTH_RADIUS 6378.137;
+unsigned long LOC_TIME = 0;
 
 Ublox M8_Gps;
 // Altitude - Latitude - Longitude - N Satellites
@@ -106,15 +107,10 @@ void GPS_Initialization() {
 	Serial1.begin(GPS_BAUD);
 }
 
-void GPS_update() {//Synchronous
+void GPS_update() {//Synchronous 
 	while(Serial1.available()){
-		M8_Gps.encode(Serial1.read());
-	}
-}
-
-void GPS_update_pc() {//Synchronous
-	while(Serial1.available()){
-		M8_Gps.encode(Serial1.read());
+		if (M8_Gps.encode(Serial1.read()))
+			LOC_TIME = millis();
 	}
 }
 
@@ -138,9 +134,10 @@ float GPS_get(String ins) {
 	return -1;
 }
 
-bool GPS_Locate_pc(){
+bool GPS_Locate(){
 	int sats = (int)GPS_get("SU");
-	if((sats == NULL) || (sats < 3)){//limit as 3 to keep the format correct
+  	Serial.print("SU: ");Serial.println(sats);
+	if((sats == NULL) || (sats < 4)){//limit as 3 to keep the format correct
 		return false;
 	}
 	//with a filter
@@ -148,7 +145,7 @@ bool GPS_Locate_pc(){
 	return true;
 }
 
-float GPS_calc(float lat1, float lng1, float lat2, float lng2) {
+float GPS_calc(float lat1, float lng1, float lat2, float lng2) {//modified from Google Map Source Code
 	lat1 = lat1 * DEG_TO_RAD;
    	lat2 = lat2 * DEG_TO_RAD;
 

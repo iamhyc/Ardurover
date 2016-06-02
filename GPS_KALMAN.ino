@@ -5,7 +5,7 @@ bool GPS_Init_Flag = false;
 float cosLat = 0.0;  
 extern Ublox M8_Gps;
 /****************************************/
-unsigned long LOC_TIME = 0;
+extern unsigned long LOC_TIME;
 float delta_T = 0; 
 //((float) (GPS_data[GPS_INDEX][2] - GPS_data[GPS_INDEX-1][2])) / 1000; 
 //LOC_TIME elapsed in seconds
@@ -41,12 +41,9 @@ int64_t firstGPS_data[1][3] = {
 
 void GPS_update_kalman()
 {
-  if(Serial1.available())
-  {
-    M8_Gps.encode(Serial1.read());
-
-    LOC_TIME = millis();
-    
+  //if(Serial1.available())
+  if(millis() < LOC_TIME + 1500)
+  { 
     prevGPS_data[0][0] = GPS_data[0][0];
     prevGPS_data[0][1] = GPS_data[0][1];
     prevGPS_data[0][2] = GPS_data[0][2];
@@ -58,7 +55,8 @@ void GPS_update_kalman()
     //Test for valid GPS data in Continental U.S. 
     KalmanData();
   }
-  else if ((GPS_Init_Flag) && (millis() > LOC_TIME + 500)){ 
+  else if (GPS_Init_Flag){
+    Serial.println("NO DATA.");
     //If system is initialized & GPS data not available for more than 1 second
     KalmanNoData();
   }
@@ -198,7 +196,7 @@ void KalmanNoData(){
             }
           }          
           GPS_DN_Print();
-          LOC_TIME = millis();       
+          LOC_TIME = millis();
 }
 
 void GPS_DI_Print() {

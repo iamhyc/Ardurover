@@ -17,7 +17,7 @@
 #define w4p  48
 #define w4e  3
 
-#define LED_RED 28
+#define LED_RED 49//49 FOR TEST
 
 void LED_RED_ON(void);
 void LED_RED_OFF(void);

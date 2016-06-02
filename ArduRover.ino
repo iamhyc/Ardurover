@@ -11,26 +11,27 @@ void setup()
   PinMode_Initilization();
 
   HMC_Initialization();//I2C
-  GPS_Initialization();//Serial1,9600
 
-  SBUS_Initilization();//Serial3,100000
+  GPS_Initialization();//Serial1, 9600,   Interrupt
+  SBUS_Initilization();//Serial3, 100000, Interrupt
+  Interrupt_Initialization();
 
-  CAN_DRV_Initialization();//CAN_1000KBPS
-
-  Serial.begin(115200);
+  Serial.begin(115200);//Serial Debug
   Serial2.begin(9600);//Serial BT Debug
   
+  CAN_DRV_Initialization();//CAN_1000KBPS
 }
 
 void loop()
 {
-  //SBUS_update();
+  SBUS_update();
   //HMC_update();
   //SBUS_Normlize();
-
+  SBUS_print();
   //HMC_print();
   //TransMove(200, 0, 0);
   //AutoMove(rc[6]);
+  AutoMove(-1);
   //wheel_calib(rc[2]);
-  wheel_test();
+  //wheel_test();
  }
