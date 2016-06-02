@@ -163,8 +163,8 @@ void GPS_print() {
 	Serial.print("ALT:");Serial.println(M8_Gps.altitude, 6);
 	Serial.print("LAT:");Serial.println(M8_Gps.latitude, 6);
 	Serial.print("LNT:");Serial.println(M8_Gps.longitude, 6);
-	Serial.print("SU");Serial.println(M8_Gps.sats_in_use, 6);
-	Serial.print("SV");Serial.println(M8_Gps.sats_in_view, 6);
+	Serial.print("SU:");Serial.println(M8_Gps.sats_in_use, 6);
+	Serial.print("SV:");Serial.println(M8_Gps.sats_in_view, 6);
 	Serial.println();
 }
 

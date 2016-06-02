@@ -43,15 +43,14 @@ void GPS_update_kalman()
 {
   //if(Serial1.available())
   if(millis() < LOC_TIME + 1500)
-  { 
+  {
     prevGPS_data[0][0] = GPS_data[0][0];
     prevGPS_data[0][1] = GPS_data[0][1];
     prevGPS_data[0][2] = GPS_data[0][2];
     
     GPS_data[0][0] = GPS_get("LAT");
     GPS_data[0][1] = GPS_get("LNG");
-    GPS_data[0][2] = (uint64_t)LOC_TIME;           
-        
+    GPS_data[0][2] = (uint64_t)LOC_TIME;
     //Test for valid GPS data in Continental U.S. 
     KalmanData();
   }
