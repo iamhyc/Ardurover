@@ -48,8 +48,8 @@ void GPS_update_kalman()
     prevGPS_data[0][1] = GPS_data[0][1];
     prevGPS_data[0][2] = GPS_data[0][2];
     
-    GPS_data[0][0] = GPS_get("LAT");
-    GPS_data[0][1] = GPS_get("LNG");
+    GPS_data[0][0] = (int64_t)GPS_get("LAT")*10000000;
+    GPS_data[0][1] = (int64_t)GPS_get("LNG")*10000000;
     GPS_data[0][2] = (uint64_t)LOC_TIME;
     //Test for valid GPS data in Continental U.S. 
     KalmanData();
@@ -121,6 +121,8 @@ void KalmanData(){
           Matrix.Multiply((float*)Matrix_Tmp24, (float*)Matrix_H_Trans, 2, 4, 2, (float*)Matrix_Tmp22_1);
           Matrix.Add((float*)Matrix_Tmp22_1, (float*)Matrix_R, 2, 2, (float*)Matrix_Tmp22_2);
           /*************/
+          Matrix.Invert((float*)Matrix_Tmp22_2, 2);
+          /*************/
           Matrix.Multiply((float*)Matrix_P_Estimate, (float*)Matrix_H_Trans, 4, 4, 2, (float*) Matrix_Tmp42);
           Matrix.Multiply((float*)Matrix_Tmp42, (float*)Matrix_Tmp22_2, 4, 2, 2, (float*)KalmanGain);
 
@@ -140,17 +142,19 @@ void KalmanData(){
             {LEN_DATA[0]},
             {LEN_DATA[1]},
           }; 
-          float Matrix_Tmp21[2][1] = {0,0};
+          float Matrix_Tmp21_1[2][1] = {0,0};
+          float Matrix_Tmp21_2[2][1] = {0,0};
           float Matrix_Tmp41[4][1] = {0,0,0,0};
 
-          Matrix.Multiply((float*)Matrix_H, (float*)Xstate_Estimate, 2, 4, 1, (float*)Matrix_Tmp21);
-          Matrix.Subtract((float*)ZkTranspose, (float*)Matrix_Tmp21, 2, 1, (float*) Matrix_Tmp21);
-          Matrix.Multiply((float*)KalmanGain, (float*)Matrix_Tmp21, 4, 2, 1, (float*) Matrix_Tmp41); 
+          Matrix.Multiply((float*)Matrix_H, (float*)Xstate_Estimate, 2, 4, 1, (float*)Matrix_Tmp21_1);
+          Matrix.Subtract((float*)ZkTranspose, (float*)Matrix_Tmp21_1, 2, 1, (float*) Matrix_Tmp21_2);
+          Matrix.Multiply((float*)KalmanGain, (float*)Matrix_Tmp21_2, 4, 2, 1, (float*) Matrix_Tmp41); 
           //Reuse intermediate matrix because it has appropriate dimensions
           Matrix.Add((float*)Xstate_Estimate, (float*)Matrix_Tmp41, 4, 1, (float*)Xstate); 
           //NO NEED TO TRANSPOSE X STATE. WE DID THAT IN MATLAB FOR CONVENIENCE
 
           /*************Line 84 of Matlab code*************/
+
           Matrix.Multiply((float*)KalmanGain, (float*)Matrix_H, 4, 2, 4, (float*)Matrix_Tmp44_1);
           Matrix.Subtract((float*)Matrix_I, (float*)Matrix_Tmp44_1, 4,4, (float*)Matrix_Tmp44_2);
           Matrix.Multiply((float*)Matrix_Tmp44_2, (float*)Matrix_P_Estimate, 4,4,4, (float*)Matrix_P);

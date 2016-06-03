@@ -18,8 +18,8 @@ const float Matrix_Q[4][4] = {
 };
 
 const float Matrix_H[2][4] = {
-  {1,0,0,0},
-  {0,1,0,0},
+  {1.0, 0.0, 0.0, 0.0},
+  {0.0, 1.0, 0.0, 0.0},
 };
 const float Matrix_H_Trans[4][2] = {
   {1.0, 0.0},
@@ -29,10 +29,10 @@ const float Matrix_H_Trans[4][2] = {
 };
 
 const float Matrix_I[4][4] = {
-  {1,0,0,0},
-  {0,1,0,0},
-  {0,0,1,0},
-  {0,0,0,1},
+  {1, 0, 0, 0},
+  {0, 1, 0, 0},
+  {0, 0, 1, 0},
+  {0, 0, 0, 1},
 };
 
 void GPS_update_kalman();
