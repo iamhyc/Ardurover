@@ -22,7 +22,7 @@ void Auto_Initialization() {
 		init_location[1] = Xstate[1][1];//GPS_get("LNG");
 		init_location[2] = HMC_getAngle();
 
-    Serial.print(init_location[0]);Serial.print(" ");
+    	Serial.print(init_location[0]);Serial.print(" ");
 		Serial.print(init_location[1]);Serial.print(" ");
 		Serial.println(init_location[2]);
 		
