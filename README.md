@@ -1,3 +1,5 @@
+KEYWORDS: GPS Kalman Filter on Arduino, Robomodule, Enhanced 1-st LPF
+
 # Project Ardurover
 
 We have:
