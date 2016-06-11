@@ -12,6 +12,8 @@ int init_location[] = {0, 0, 0};//Latitude, Longtitude, Yaw
 extern int rc[16];
 extern float Xstate[4][1];
 
+bool back_flag = false;
+
 void Auto_Initialization() {
   //GPS_print();
 	if(!GPS_Locate()) {
@@ -22,7 +24,7 @@ void Auto_Initialization() {
 		init_location[1] = Xstate[1][1];//GPS_get("LNG");
 		init_location[2] = HMC_getAngle();
 
-    	Serial.print(init_location[0]);Serial.print(" ");
+    Serial.print(init_location[0]);Serial.print(" ");
 		Serial.print(init_location[1]);Serial.print(" ");
 		Serial.println(init_location[2]);
 		
@@ -42,16 +44,28 @@ void AutoMove(char sw) {
 			Auto_Initialization();//for loop with FSM
 		break;
 		case 1:
-			Wheel_Stop();
+			if(!back_flag)
+				Wheel_Stop();
 			Naviback();
 		break;
 	}
 }
 
 void Naviback() {
+	back_flag = true;
 	if(!GPS_Locate()) return;
-  	float current_lat = Xstate[0][1];
-  	float current_lng = Xstate[1][1];
-		
+
+	float current_angle = HMC_getAngle();
+  	float delta_lat = Xstate[0][1] - init_location[0];
+  	float delta_lng = Xstate[1][1] - init_location[1];
+  	float delta_agl = atan(delta_lat / delta_lng);//delta_y/delta_x
+  	//clockwise as forword
+  	float target_angle = (delta_lat<0?(delta_agl - 15):(165 - delta_agl));
+  	target_angle = rot_fix(target_angle);
+
+  	float vrr_ctl = TransMove_Control(current_angle, target_angle);
+
+  	TransMove_RM(255, 0, vrr_ctl);
+
 	return;
 }

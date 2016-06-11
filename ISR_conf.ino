@@ -15,4 +15,5 @@ void Interrupt_Initialization() {
 void Timer2Service() {
 	sbus.process();
 	GPS_update();
+	HMC_update();
 }

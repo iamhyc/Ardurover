@@ -65,7 +65,7 @@ void TransMove(float vfr, float vtr, float vrr) {
 
 float TransMove_Control(float current_angle, float target_angle)
 {
-    const float g_p = 20.0;
+    const float g_p = 2.0;
     const float g_i = 0.0;
     const float g_d = 0.0;
     

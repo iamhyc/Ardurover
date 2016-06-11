@@ -8,5 +8,6 @@
 
 int __fix(int);
 float rot_abs(float);
+float rot_fix(float);
 
 #endif

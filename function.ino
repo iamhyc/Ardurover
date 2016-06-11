@@ -10,6 +10,15 @@ int __fix(int speedoutput)
    return speedoutput;   
 }
 
+float rot_fix(float deg) {
+	if (deg > 360)
+		deg -= 360;
+	else if (deg < 0)
+		deg += 360;
+
+	return deg;
+}
+
 float rot_abs(float deg) {
 	float tmp = abs(deg);
 	if (deg > 180)
