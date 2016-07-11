@@ -46,7 +46,7 @@ void Sonar_update() {
       digitalWrite(sonar_trigger, HIGH);delay(1);
       digitalWrite(sonar_trigger, LOW);
       SonarVal[i] = pulseIn(SonarDev[i], HIGH, 10E3);
-      if(SonarVal[i]==0)  SonarVal[i] = 999;
+      if(SonarVal[i]==0)  SonarVal[i] = 9999;
       Sonar_Norm(i);
     }
 }

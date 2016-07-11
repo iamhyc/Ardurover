@@ -1,10 +1,10 @@
 #include "Chasis_RM.h"
 #include "sonar_trigger.h"
 
-#define MAX_SPEED 120
+#define MAX_SPEED 90
 #define MAX_LOOP 100
 #define BND_LOOP 80
-#define DETECT_BOUND 250
+#define DETECT_BOUND 300
 
 extern int SonarNorm[];
 
@@ -37,13 +37,13 @@ bool Bound_Detect() {
 	    cj = -1;
       f2 = 1;
 	  }
-
    return (f1||f2);
 }
 
 void RandomMove() {
   if(Bound_Detect()){
     TransMove_RM(ci * MAX_SPEED, cj * MAX_SPEED, 0);
+    delay(1E2);
   }
   else{
     randomSeed(analogRead(A0)); 
@@ -55,9 +55,9 @@ void RandomMove() {
       case 2:ci=-1;cj=0;break;//backward
       case 3:ci=0;cj=-1;break;//left
     }
-
+    //Serial.print(ci);Serial.print(" ");Serial.println(cj);
     TransMove_RM(ci * MAX_SPEED, cj * MAX_SPEED, 0);
-    delay(8E2);
+    delay(6E2);
   }
   
 }
