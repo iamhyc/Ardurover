@@ -36,7 +36,7 @@ void loop()
   SBUS_update();
   SBUS_Normlize();
   //SBUS_print();
-  //Sonar_update();
+  Sonar_update();
   //Sonar_print();
   //delay(100);
   //TransMove_RM(rc[1], rc[0], rc[3]);
