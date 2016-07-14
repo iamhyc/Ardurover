@@ -2,10 +2,10 @@
 #include "sonar_trigger.h"
 
 #define MAX_SPEED 90
-#define MAX_LOOP 100
-#define BND_LOOP 25
-#define DETECT_BOUND_HEAD 300
-#define DETECT_BOUND_SIDE 320
+#define MAX_LOOP 70
+#define BND_LOOP 50
+#define DETECT_BOUND_HEAD 315
+#define DETECT_BOUND_SIDE 325
 
 extern int SonarNorm[];
 
@@ -21,31 +21,30 @@ int rnd_dir;
 bool Bound_Detect() {
   bool f1 = 0, f2 = 0;
 	if (SonarNorm[0] < DETECT_BOUND_HEAD)	{
-	  ci = -1;cs = 0;
+	  ci = -1;//BACKWARD
     f1 = 1;
 	}
   else
 	  if (SonarNorm[2] < DETECT_BOUND_HEAD)	{
-	    ci = +1;cs = 0;
+	    ci = +1;//FORWARD
       f1 = 1;
 	  }
 	
 	if (SonarNorm[1] < DETECT_BOUND_SIDE)	{
-	  cj = +1;cs = 0;
+	  cj = +1;//RIGHT
     f2 = 1;
 	}
 	else
 	  if (SonarNorm[3] < DETECT_BOUND_SIDE)	{
-	    cj = -1;cs = 0;
+	    cj = -1;//LEFT
       f2 = 1;
 	  }
-   return (f1||f2)&&(cs==0);
+   return (f1||f2);
 }
 
 void RandomMove() {
   if(Bound_Detect() && (ck < BND_LOOP)){
     ck = BND_LOOP;
-    //Serial.println(ck);
   }
   else if(ck <= MAX_LOOP){
     ck++;
@@ -56,7 +55,7 @@ void RandomMove() {
     randomSeed(analogRead(A0)); 
     int rnd_val = random(2);
     rnd_dir = (2 * rnd_val + rnd_dir + 1) % 4;
-    rnd_dir = ((int)(random(3)) + rnd_dir + 1) % 4;
+    
     randomSeed(analogRead(A0));
     rnd_val = random(6);
     rnd_dir = (rnd_val==0)?(4):(rnd_dir);
